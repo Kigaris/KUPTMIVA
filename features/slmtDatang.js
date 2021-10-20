@@ -9,13 +9,13 @@ module.exports = function (controller) {
         // If the person being added to a space isn't the bot, exit
         if ( message.data.personId != controller.adapter.identity.id )  return;
 
-        let markDown = `Hi, I am the **${ controller.adapter.identity.displayName }** bot!  \n`
-        markDown += 'Type `help` to learn more about my skills.  ';
+        let markDown = `Hi, Saya ${ controller.adapter.identity.displayName } bot!  \nSaya Gembira berjumpa dengan awak`
+        markDown += 'Sila type "bantuan" untuk mengetahui kebolehan saya.';
 
         if ( message.data.roomType == 'group' ) {
 
-            markDown += `\n_Note that this is a "group" space.\n  I will answer only if mentioned!  \n`
-            markDown += `For help, enter: ${ controller.checkAddMention( message.data.roomType, 'help' ) }_`
+            markDown += `\n_Perhatian, kita sekarang berada di ruang "Kumpulan" \n  Saya hanya akan menjawap jika dipanggil!  \n`
+            markDown += `Untuk bantuan, Enter: ${ controller.checkAddMention( message.data.roomType, 'bantuan' ) }_`
         }
 
         await bot.reply( message, { markdown : markDown} );

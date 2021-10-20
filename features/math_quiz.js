@@ -7,21 +7,21 @@ const { BotkitConversation } = require( 'botkit' );
 
 module.exports = function (controller) {
 
-    const convo = new BotkitConversation( 'math_chat', controller );
+    const convo = new BotkitConversation( 'matematik', controller );
 
-    convo.ask( 'Ready for a challenge? (yes/no/cancel)', [
+    convo.ask( 'Bersedia untuk cabaran matematik? (Ya/Tidak/batal)', [
         {
-            pattern: 'yes|ya|yeah|sure|oui|si',
+            pattern: 'Ya|ya|yeah|yes',
             handler: async ( response, convo ) => {
 
                 convo.gotoThread( 'quiz' );
             }
         },
         {
-            pattern: 'no|neh|non|na|birk|cancel|stop|exit',
+            pattern: 'tidak|Tidak|no|batal|Batal|cancel|stop|exit',
             handler: async ( response, convo ) => {
 
-                await convo.gotoThread( 'cancel' );
+                await convo.gotoThread( 'batal' );
             },
         },
         {
@@ -34,33 +34,33 @@ module.exports = function (controller) {
 
     // Thread: bad response
     convo.addMessage({
-        text: 'Sorry, I did not understand...',
+        text: 'Maaf, pilihan anda tiada dalam senarai...',
         action: 'default', // goes back to the thread's current state, where the question is not answered
     }, 'bad_answer' );
 
     // Thread: cancel
     convo.addMessage({
-        text: 'Got it, cancelling...',
+        text: 'OK, Terima Kasih kerana mencuba',
         action: 'stop', // this marks the converation as unsuccessful
-    }, 'cancel');
+    }, 'batal');
 
     // Thread: quiz
 
-    convo.addMessage( 'Let\'s go...', 'quiz' );
+    convo.addMessage( 'Mari kita mulakan...', 'quiz' );
 
     let challenge = pickChallenge();
 
     convo.addQuestion( {
         text: async ( template, vars ) => { 
             
-            return `Question: ${ challenge.question }` }
+            return `Soalan: ${ challenge.question }` }
         },
         [
             {
-                pattern: 'cancel|stop|exit',
+                pattern: 'cancel|stop|exit|batal|Batal',
                 handler: async ( response, convo ) => {
 
-                    await convo.gotoThread( 'cancel' );
+                    await convo.gotoThread( 'batal' );
                 }
             },
             {
@@ -69,26 +69,26 @@ module.exports = function (controller) {
 
                     if ( response == challenge.answer){
                         challenge = pickChallenge();
-                        await convo.gotoThread( 'success' )
+                        await convo.gotoThread( 'berjaya' )
                     }
                     else {
-                        await convo.gotoThread( 'wrong_answer' );
+                        await convo.gotoThread( 'salah' );
                     }
                 }
             }
         ], {}, 'quiz');
 
     // Thread: quiz - success
-    convo.addMessage( 'Congrats, you did it!', 'success');
+    convo.addMessage( 'Taniah, anda berjaya menjawab soalan dengan betul!', 'berjaya');
 
     // Thread: quiz - missed
     // convo.addMessage( 'Time elapsed! you missed it, sorry.', 'missed' ); //TODO
 
     // Thread: quiz - wrong answer
     convo.addMessage({
-        text: 'Sorry, wrong answer. Try again!',
+        text: 'Maaf, jawapan anda salah. Sila cuba lagi!',
         action: 'quiz', // goes back to the thread's current state, where the question is not answered
-    }, 'wrong_answer');
+    }, 'salah');
 
     controller.addDialog( convo );
 
@@ -101,11 +101,11 @@ module.exports = function (controller) {
         }
     }
 
-    controller.hears( 'math', 'message,direct_message', async ( bot, message ) => {
+    controller.hears( 'Matematik', 'message,direct_message', async ( bot, message ) => {
 
-        await bot.beginDialog( 'math_chat' );
+        await bot.beginDialog( 'matematik' );
     });
 
-    controller.commandHelp.push( { command: 'math', text: 'Conversation/thread example implementing a math quiz' } );
+    controller.commandHelp.push( { command: 'Matematik', text: 'Cabar minda dengan soalan matematik!' } );
 
 }
